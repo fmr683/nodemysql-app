@@ -1,0 +1,5 @@
+{
+    "saltRound": 10,
+    "DATABASE_URL": "mysql://root:123@localhost/test_db?debug=false&charset=utf8_general_ci&timezone=utc",
+    "jwtSecKey": "32423gdgfdgdfg234fdsgfsdfsdfNKJHJASJKDSA"
+}

@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: change
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    restart: on-failure
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - test
+
+  rabbitmq:
+    image: rabbitmq:3.8-alpine
+    hostname: rabbitmq
+    command: rabbitmq-server
+    expose:
+      - 5672
+      - 15672
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "5672"]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+    environment:
+      RABBITMQ_DEFAULT_USER: test
+      RABBITMQ_DEFAULT_PASS: test
+    restart: on-failure
+    networks:
+      - test
+
+  broker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 4000:4000
+      - 4001:4001
+    environment:
+      DATABASE_URL: "mysql://test:test@mysql/test?debug=false&charset=utf8_general_ci&timezone=utc"
+      RABBIT_MQ_CON: "amqp://test:test@rabbitmq:5672"
+      DISTANCE_METER: 5
+      DISTANCE_DELAY_SECOND: 300
+    networks:
+      - test
+    depends_on:
+      - mysql
+      - rabbitmq
+
+networks:
+  test:

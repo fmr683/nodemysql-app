@@ -1,0 +1,69 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "test-api",
+            "image": "image",
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "hostPort": 3000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "API_BASE_URL",
+                    "value": "api.test.io"
+                },
+                {
+                    "name": "NODE_ENV",
+                    "value": "production"
+                },
+                {
+                    "name": "BASE_URL",
+                    "value": "tracking.test.io"
+                },
+                {
+                    "name": "DL_MODE",
+                    "value": "cloud"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "DATABASE_URL",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:624380851165:secret:test/db-url-HMlm7V"
+                },
+                {
+                    "name": "RABBIT_MQ_CON",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:624380851165:secret:test/mq-conn-bKDOcD"
+                },
+                {
+                    "name": "REDIS_HOST",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:624380851165:secret:test/redis-endpoint-g3nQtZ"
+                },
+                {
+                    "name": "REDIS_PORT",
+                    "valueFrom": "arn:aws:secretsmanager:ap-southeast-2:624380851165:secret:test/redis-port-XQmkpr"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/test-api-task",
+                    "awslogs-region": "ap-southeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "family": "test-api-task",
+    "taskRoleArn": "arn:aws:iam::624380851165:role/test-task-role",
+    "executionRoleArn": "arn:aws:iam::624380851165:role/test-task-role",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048"
+}
